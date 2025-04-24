@@ -1,18 +1,8 @@
 package com.devsuperior.movieflix.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tb_movie")
@@ -31,9 +21,13 @@ public class Movie {
     @Column(columnDefinition = "TEXT")
     private String synopsis;
 
-    @ManyToOne
-    @JoinColumn(name = "genre_id")
-    private Genre genre;
+    @ManyToMany
+    @JoinTable(
+            name = "tb_movie_genre",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Set<Genre> genres = new HashSet<>();
 
     @OneToMany(mappedBy = "movie")
     private List<Review> reviews = new ArrayList<>();
@@ -42,14 +36,14 @@ public class Movie {
 
     }
 
-    public Movie(Long id, String title, String subTitle, Integer year, String imgUrl, String synopsis, Genre genre) {
+    public Movie(Long id, String title, String subTitle, Integer year, String imgUrl, String synopsis) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
         this.year = year;
         this.imgUrl = imgUrl;
         this.synopsis = synopsis;
-        this.genre = genre;
+        //this.genre = genre;
     }
 
     public Long getId() {
@@ -100,12 +94,16 @@ public class Movie {
         this.synopsis = synopsis;
     }
 
-    public Genre getGenre() {
+    /*public Genre getGenre() {
         return genre;
     }
 
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }*/
+
+    public Set<Genre> getGenres(){
+        return genres;
     }
 
     public List<Review> getReviews() {

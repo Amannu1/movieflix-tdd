@@ -15,8 +15,8 @@ public class MovieDetailsDTO {
     private Integer year;
     private String imgUrl;
     private String synopsis;
-    private GenreDTO genre;
-   // private List<GenreDTO> genres = new ArrayList<>();
+    //private GenreDTO genre;
+   private List<GenreDTO> genres = new ArrayList<>();
 
     public MovieDetailsDTO(){
 
@@ -40,7 +40,9 @@ public class MovieDetailsDTO {
         this.synopsis = entity.getSynopsis();
     }
 
-    public MovieDetailsDTO(Movie entity, Genre genre) {
+    public MovieDetailsDTO(Movie entity, Set<Genre> genres) {
+        this(entity);
+        genres.forEach(cat -> this.genres.add(new GenreDTO(cat)));
     }
 
     /*public MovieDetailsDTO(Movie entity, Set<Genre> genres){
@@ -96,14 +98,14 @@ public class MovieDetailsDTO {
         this.synopsis = synopsis;
     }
 
-    /*public List<GenreDTO> getGenres(){
+    public List<GenreDTO> getGenres(){
         return genres;
-    }*/
-	public GenreDTO getGenre() {
+    }
+	/*public GenreDTO getGenre() {
 		return genre;
 	}
 
 	public void setGenre(GenreDTO genre) {
 		this.genre = genre;
-	}
+	}*/
 }

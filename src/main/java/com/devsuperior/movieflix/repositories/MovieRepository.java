@@ -11,15 +11,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface MovieRepository extends JpaRepository <Movie, Long>{
+public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     Optional<Movie> findById(Long id);
 
-    @Query("SELECT obj FROM Movie obj WHERE :genre IS NULL OR obj.genre = :genre ORDER BY obj.title ")
+    @Query("SELECT obj FROM Movie obj WHERE :genres IS NULL OR obj.genres = :genres ORDER BY obj.title ")
     Page<Movie> find(Genre genre, Pageable pageable);
 
-    @Query("SELECT obj FROM Movie obj JOIN FETCH obj.genre WHERE obj IN :movies ")
+    @Query("SELECT obj FROM Movie obj JOIN FETCH obj.genres WHERE obj IN :movies ")
     List<Movie> findMoviesWithGenres(List<Movie> movies);
 
     List<Movie> findAll();
