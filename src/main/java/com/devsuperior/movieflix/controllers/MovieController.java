@@ -20,6 +20,7 @@ public class MovieController {
     private MovieService service;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_MEMBER', 'ROLE_VISITOR')")
     public ResponseEntity<Page<MovieDetailsDTO>> findAllPaged(
             @RequestParam(value = "title", defaultValue ="") String title,
             @RequestParam(value = "genreId", defaultValue = "0") Long genreId,
