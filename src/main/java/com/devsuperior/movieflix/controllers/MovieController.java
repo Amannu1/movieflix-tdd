@@ -5,7 +5,9 @@ import com.devsuperior.movieflix.services.MovieService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +21,13 @@ public class MovieController {
 
     @GetMapping
     public ResponseEntity<Page<MovieDetailsDTO>> findAllPaged(
+            @RequestParam(value = "title", defaultValue ="") String title,
             @RequestParam(value = "genreId", defaultValue = "0") Long genreId,
-            Pageable pageable){
-        Page<MovieDetailsDTO> list = service.findAllPaged(genreId, pageable);
+            Pageable pageable
+            ){
+
+        Page<MovieDetailsDTO> list = service.findAllPaged(title, genreId, pageable);
+
         return ResponseEntity.ok().body(list);
     }
 

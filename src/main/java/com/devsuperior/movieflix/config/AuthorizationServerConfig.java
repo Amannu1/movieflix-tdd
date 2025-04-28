@@ -64,25 +64,33 @@ public class AuthorizationServerConfig {
 	private Integer jwtDurationSeconds;
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
-	@Autowired
 	private UserDetailsService userDetailsService;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Bean
 	@Order(2)
 	public SecurityFilterChain asSecurityFilterChain(HttpSecurity http) throws Exception {
+		http.securityMatcher("/oauth2/**");
 
-		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+		OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+				new OAuth2AuthorizationServerConfigurer();
 
-		// @formatter:off
-		http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-			.tokenEndpoint(tokenEndpoint -> tokenEndpoint
-				.accessTokenRequestConverter(new CustomPasswordAuthenticationConverter())
-				.authenticationProvider(new CustomPasswordAuthenticationProvider(authorizationService(), tokenGenerator(), userDetailsService, passwordEncoder)));
+		http
+				.csrf(csrf -> csrf.disable())
+				.with(authorizationServerConfigurer, Customizer.withDefaults());
 
-		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()));
-		// @formatter:on
+		authorizationServerConfigurer.tokenEndpoint(tokenEndpoint ->
+				tokenEndpoint
+						.accessTokenRequestConverter(new CustomPasswordAuthenticationConverter())
+						.authenticationProvider(new CustomPasswordAuthenticationProvider(
+								authorizationService(),
+								tokenGenerator(),
+								userDetailsService,
+								passwordEncoder
+						))
+		);
 
 		return http.build();
 	}
@@ -97,19 +105,20 @@ public class AuthorizationServerConfig {
 		return new InMemoryOAuth2AuthorizationConsentService();
 	}
 
+
 	@Bean
 	public RegisteredClientRepository registeredClientRepository() {
 		// @formatter:off
 		RegisteredClient registeredClient = RegisteredClient
-			.withId(UUID.randomUUID().toString())
-			.clientId(clientId)
-			.clientSecret(passwordEncoder.encode(clientSecret))
-			.scope("read")
-			.scope("write")
-			.authorizationGrantType(new AuthorizationGrantType("password"))
-			.tokenSettings(tokenSettings())
-			.clientSettings(clientSettings())
-			.build();
+				.withId(UUID.randomUUID().toString())
+				.clientId(clientId)
+				.clientSecret(passwordEncoder.encode(clientSecret))
+				.scope("read")
+				.scope("write")
+				.authorizationGrantType(new AuthorizationGrantType("password"))
+				.tokenSettings(tokenSettings())
+				.clientSettings(clientSettings())
+				.build();
 		// @formatter:on
 
 		return new InMemoryRegisteredClientRepository(registeredClient);
@@ -119,9 +128,9 @@ public class AuthorizationServerConfig {
 	public TokenSettings tokenSettings() {
 		// @formatter:off
 		return TokenSettings.builder()
-			.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
-			.accessTokenTimeToLive(Duration.ofSeconds(jwtDurationSeconds))
-			.build();
+				.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+				.accessTokenTimeToLive(Duration.ofSeconds(jwtDurationSeconds))
+				.build();
 		// @formatter:on
 	}
 
@@ -153,8 +162,8 @@ public class AuthorizationServerConfig {
 			if (context.getTokenType().getValue().equals("access_token")) {
 				// @formatter:off
 				context.getClaims()
-					.claim("authorities", authorities)
-					.claim("username", user.getUsername());
+						.claim("authorities", authorities)
+						.claim("username", user.getUsername());
 				// @formatter:on
 			}
 		};

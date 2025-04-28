@@ -4,7 +4,12 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_genre")
@@ -15,7 +20,7 @@ public class Genre {
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "genres")
+    @OneToMany(mappedBy = "genre")
     private Set<Movie> movies = new HashSet<>();
 
     public Genre() {

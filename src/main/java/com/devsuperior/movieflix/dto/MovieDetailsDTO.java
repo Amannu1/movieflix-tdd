@@ -3,8 +3,6 @@ package com.devsuperior.movieflix.dto;
 import com.devsuperior.movieflix.entities.Genre;
 import com.devsuperior.movieflix.entities.Movie;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class MovieDetailsDTO {
@@ -15,40 +13,31 @@ public class MovieDetailsDTO {
     private Integer year;
     private String imgUrl;
     private String synopsis;
-    //private GenreDTO genre;
-   private List<GenreDTO> genres = new ArrayList<>();
+    private GenreDTO genre;
 
     public MovieDetailsDTO(){
 
     }
 
-    public MovieDetailsDTO(Long id, String title, String subTitle, Integer year, String imgUrl, String synopsis) {
+    public MovieDetailsDTO(Long id, String synopsis, String imgUrl, Integer year, String subTitle, String title, GenreDTO genre) {
         this.id = id;
-        this.title = title;
-        this.subTitle = subTitle;
-        this.year = year;
-        this.imgUrl = imgUrl;
         this.synopsis = synopsis;
+        this.imgUrl = imgUrl;
+        this.year = year;
+        this.subTitle = subTitle;
+        this.title = title;
+        this.genre = genre;
     }
 
-    public MovieDetailsDTO(Movie entity){
+    public MovieDetailsDTO(Movie entity) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.subTitle = entity.getSubTitle();
         this.year = entity.getYear();
         this.imgUrl = entity.getImgUrl();
         this.synopsis = entity.getSynopsis();
+        this.genre = new GenreDTO(entity.getGenre());
     }
-
-    public MovieDetailsDTO(Movie entity, Set<Genre> genres) {
-        this(entity);
-        genres.forEach(cat -> this.genres.add(new GenreDTO(cat)));
-    }
-
-    /*public MovieDetailsDTO(Movie entity, Set<Genre> genres){
-        this(entity);
-        genres.forEach(cat -> this.genres.add(new GenreDTO(cat)));
-    }*/
 
     public Long getId() {
         return id;
@@ -98,14 +87,11 @@ public class MovieDetailsDTO {
         this.synopsis = synopsis;
     }
 
-    public List<GenreDTO> getGenres(){
-        return genres;
-    }
-	/*public GenreDTO getGenre() {
+	public GenreDTO getGenre() {
 		return genre;
 	}
 
 	public void setGenre(GenreDTO genre) {
 		this.genre = genre;
-	}*/
+	}
 }
