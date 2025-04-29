@@ -26,6 +26,6 @@ public class ReviewController {
     public ResponseEntity<ReviewDTO> insertReview(@Valid @RequestBody ReviewDTO dto){
         dto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
-        return ResponseEntity.created(uri).build();
+        return ResponseEntity.created(uri).body(dto);
     }
 }
