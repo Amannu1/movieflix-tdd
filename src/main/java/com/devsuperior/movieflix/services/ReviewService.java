@@ -24,7 +24,7 @@ public class ReviewService {
     @Autowired
     private AuthService authService;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ReviewDTO insert(ReviewDTO dto){
         Review entity = new Review();
         entity.setText(dto.getText());
